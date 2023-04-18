@@ -23,7 +23,6 @@ exports.create = (text, callback) => {
 
 
 exports.readAll = (callback) => {
-  var todoList;
   fs.readdir(exports.dataDir, (err = null, files) => {
     if (err) {
       throw console.log('error');
@@ -68,15 +67,22 @@ exports.update = (id, text, callback) => {
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  exports.readOne(id, (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      var idToPass = `${exports.dataDir}/${id}.txt`;
+      fs.unlink(idToPass, (err = null) => {
+        if (err) {
+          callback(new Error('This file is read-only'));
+        } else {
+          callback(err);
+        }
+      });
+    }
+  });
 };
+
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
