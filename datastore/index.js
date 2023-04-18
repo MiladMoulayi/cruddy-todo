@@ -9,7 +9,7 @@ var items = {};
 
 exports.create = (text, callback) => {
   counter.getNextUniqueId((err = null, id) => {
-    items[id] = text;
+    // items[id] = text;
     var toDoDir = path.join(exports.dataDir, `${id}.txt`);
     fs.writeFile(toDoDir, text, (err) => {
       if (err) {
@@ -25,7 +25,6 @@ exports.create = (text, callback) => {
 exports.readAll = (callback) => {
   var todoList;
   fs.readdir(exports.dataDir, (err = null, files) => {
-    console.log('this is what fs.readdir returning', files);
     if (err) {
       throw console.log('error');
     } else {
@@ -40,12 +39,15 @@ exports.readAll = (callback) => {
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
+  var idToPass = `${exports.dataDir}/${id}.txt`;
+  fs.readFile(idToPass, 'utf8', (err = null, text) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text });
+    }
   }
+  );
 };
 
 exports.update = (id, text, callback) => {
