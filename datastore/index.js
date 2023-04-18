@@ -8,10 +8,19 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err = null, id) => {
+    items[id] = text;
+    var toDoDir = path.join(exports.dataDir, `${id}.txt`);
+    fs.writeFile(toDoDir, text, (err) => {
+      if (err) {
+        throw ('error writing todo input file');
+      } else {
+        callback(null, { id, text });
+      }
+    });
+  });
 };
+
 
 exports.readAll = (callback) => {
   var data = _.map(items, (text, id) => {
@@ -53,6 +62,7 @@ exports.delete = (id, callback) => {
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
 exports.dataDir = path.join(__dirname, 'data');
+
 
 exports.initialize = () => {
   if (!fs.existsSync(exports.dataDir)) {
