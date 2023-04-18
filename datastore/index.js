@@ -51,13 +51,20 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  exports.readOne(id, (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      var idToPass = `${exports.dataDir}/${id}.txt`;
+      fs.writeFile(idToPass, text, (err = null) => {
+        if (err) {
+          callback(new Error('This file is read-only'));
+        } else {
+          callback(null, { id, text });
+        }
+      });
+    }
+  });
 };
 
 exports.delete = (id, callback) => {
