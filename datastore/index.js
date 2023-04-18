@@ -13,7 +13,7 @@ exports.create = (text, callback) => {
     var toDoDir = path.join(exports.dataDir, `${id}.txt`);
     fs.writeFile(toDoDir, text, (err) => {
       if (err) {
-        throw ('error writing todo input file');
+        throw ('error writing todo file');
       } else {
         callback(null, { id, text });
       }
@@ -23,19 +23,20 @@ exports.create = (text, callback) => {
 
 
 exports.readAll = (callback) => {
-  if (fs.readdirSync(exports.dataDir, (err) => {
+  var todoList;
+  fs.readdir(exports.dataDir, (err = null, files) => {
+    console.log('this is what fs.readdir returning', files);
     if (err) {
-      throw ('an error');
+      throw console.log('error');
     } else {
-      null;
+      var formatedList = [];
+      files.forEach((items) => {
+        item = items.slice(0, -4);
+        formatedList.push({'id': item, 'text': item});
+      });
+      return callback(null, formatedList);
     }
-  }).length === 0) {
-    return [];
-  }
-  var data = _.map(items, (text, id) => {
-    return { id, text };
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {

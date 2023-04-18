@@ -106,11 +106,10 @@ describe('todos', () => {
     });
   });
 
-  describe('readAll', () => {
+  describe.only('readAll', () => {
     it('should return an empty array when there are no todos', (done) => {
       todos.readAll((err, todoList) => {
         expect(err).to.be.null;
-        console.log('!!! THIS IS TODOLIST', todoList);
         expect(todoList.length).to.equal(0);
         done();
       });
