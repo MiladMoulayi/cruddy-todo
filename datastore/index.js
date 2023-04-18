@@ -23,6 +23,15 @@ exports.create = (text, callback) => {
 
 
 exports.readAll = (callback) => {
+  if (fs.readdirSync(exports.dataDir, (err) => {
+    if (err) {
+      throw ('an error');
+    } else {
+      null;
+    }
+  }).length === 0) {
+    return [];
+  }
   var data = _.map(items, (text, id) => {
     return { id, text };
   });
