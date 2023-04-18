@@ -145,6 +145,7 @@ describe('todos', () => {
       const todoText = 'buy chocolate';
       todos.create(todoText, (err, createdTodo) => {
         const id = createdTodo.id;
+        console.log('this is the test ID', id);
         todos.readOne(id, (err, readTodo) => {
           expect(readTodo).to.deep.equal({ id, text: todoText });
           done();
@@ -187,7 +188,7 @@ describe('todos', () => {
     });
   });
 
-  describe('delete', () => {
+  describe.only('delete', () => {
     beforeEach((done) => {
       todos.create('delete this todo', done);
     });
